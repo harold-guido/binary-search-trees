@@ -104,6 +104,7 @@ class Tree
     @root = build_tree(self.inorder_array().push(value).sort.uniq)
   end
 
+ 
   #ALTERNATIVE INSERT
     #if value >= node.value then
       #node.right == nil ? node.right = Node.new(value, nil, nil) : insert(value, node.right)
@@ -121,6 +122,37 @@ class Tree
       value == node.value ? node : value < node.value ? find(value, node.left) : find(value, node.right)
     else
       nil
+    end
+  end
+
+  def height(node)
+    if node.right == nil && node.left == nil
+      return 0
+    elsif node.right == nil
+      return 1 + height(node.left)
+    elsif node.left == nil
+      return 1 + height(node.right)
+    else
+      height(node.left) >= height(node.right) ? 1 + height(node.left) : 1 + height(node.right)
+    end
+  end
+
+  def depth(node, root = @root)
+    if root.right == node
+      return 1
+    elsif root.left == node
+      return 1
+    else
+      if root.right == nil && root.right == nil
+        return -Float::INFINITY
+      elsif root.right == nil
+        return 1 + depth(node, root.left)
+      elsif root.left == nil
+        return 1 + depth(node, root.right)
+      else
+        depth(node, root.left) <= depth(node, root.right) ? 1 + depth(node, root.right) 
+        : 1 + depth(node, root.right)
+      end
     end
   end
 
