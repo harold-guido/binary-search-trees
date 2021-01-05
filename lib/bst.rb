@@ -21,7 +21,7 @@ class Tree
     end
   end
 
-  def level_order(node_queue = [@root], return_array = [])
+  def level_order_array(node_queue = [@root], return_array = [])
     temp_node_queue = []
 
     node_queue.each do |node| 
@@ -29,18 +29,18 @@ class Tree
 
       unless node.right == nil && node.left == nil
         if node.left == nil
-          temp_node_queue + [node.right] 
+          temp_node_queue += [node.right] 
 
         elsif node.right == nil 
-          temp_node_queue + [node.left]
+          temp_node_queue += [node.left]
 
         else
-          temp_node_queue + [node.left] + [node.right]
+          temp_node_queue += ([node.left] + [node.right])
         end
       end
     end
-      
-    temp_node_queue.length != 0 ? level_order(temp_node_queue, return_array) : return_array
+
+    temp_node_queue.length != 0 ? level_order_array(temp_node_queue, return_array) : return_array
   end
 
   def preorder_array(node = @root)
@@ -100,17 +100,20 @@ class Tree
       pretty_print(node.left, "#{prefix}#{is_left ? '    ' : '│   '}", true) if node.left
   end
 
-  def insert(value, node = @root)
-    @root = build_tree(self.inorder_array().push(value).sort.uniq)
-  end
+  #ALTERNATIVE INSERT
+  #def insert(value, node = @root)
+    #@root = build_tree(self.inorder_array().push(value).sort.uniq)
+  #end
 
  
   #ALTERNATIVE INSERT
-    #if value >= node.value then
-      #node.right == nil ? node.right = Node.new(value, nil, nil) : insert(value, node.right)
-    #else
-      #node.left == nil ? node.left = Node.new(value, nil, nil) : insert(value, node.left)
-    #end
+  def insert(value, node = @root)
+    if value >= node.value then
+      node.right == nil ? node.right = Node.new(value, nil, nil) : insert(value, node.right)
+    else
+      node.left == nil ? node.left = Node.new(value, nil, nil) : insert(value, node.left)
+    end
+  end
 
   def delete(value, node = @root)
     self.inorder_array().include?(value) ? @root = build_tree(self.inorder_array().delete(value))
@@ -154,6 +157,10 @@ class Tree
         : 1 + depth(node, root.right)
       end
     end
+  end
+
+  def balanced?(root = @root)
+    (self.height(root.right) - self.height(root.left)).abs > 1 ? false : true
   end
 
   def rebalance(node = @root)
