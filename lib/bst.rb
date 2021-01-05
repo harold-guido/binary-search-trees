@@ -21,6 +21,45 @@ class Tree
     end
   end
 
+  def level_order(node_queue = [@root], return_array = [])
+    temp_node_queue = []
+
+    node_queue.each do |node| 
+      return_array.push(node.value)
+
+      unless node.right == nil && node.left == nil
+        if node.left == nil
+          temp_node_queue + [node.right] 
+
+        elsif node.right == nil 
+          temp_node_queue + [node.left]
+
+        else
+          temp_node_queue + [node.left] + [node.right]
+        end
+      end
+    end
+      
+    temp_node_queue.length != 0 ? level_order(temp_node_queue, return_array) : return_array
+  end
+
+  def preorder_array(node = @root)
+    if node.left == nil && node.right == nil then
+      [node.value]
+
+    elsif node.left == nil
+      [node.value] + inorder_array(node.right)
+
+    elsif node.right == nil
+      [node.value] + inorder_array(node.left)
+
+    else
+      [node.value] + inorder_array(node.left) + inorder_array(node.right)
+
+    end
+
+  end
+
   def inorder_array(node = @root)
     if node.left == nil && node.right == nil then
       [node.value]
@@ -33,6 +72,22 @@ class Tree
 
     else
       inorder_array(node.left) + [node.value] + inorder_array(node.right)
+
+    end
+  end
+
+  def postorder_array(node = @root)
+    if node.left == nil && node.right == nil then
+      [node.value]
+
+    elsif node.left == nil
+      inorder_array(node.right) + [node.value]
+
+    elsif node.right == nil
+      inorder_array(node.left) + [node.value]
+
+    else
+      inorder_array(node.left) + inorder_array(node.right) + [node.value]
 
     end
   end
@@ -59,6 +114,14 @@ class Tree
   def delete(value, node = @root)
     self.inorder_array().include?(value) ? @root = build_tree(self.inorder_array().delete(value))
     : (puts "No such value in tree")
+  end
+
+  def find(value, node = @root)
+    if node != nil
+      value == node.value ? node : value < node.value ? find(value, node.left) : find(value, node.right)
+    else
+      nil
+    end
   end
 
   def rebalance(node = @root)
